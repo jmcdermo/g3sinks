@@ -23,6 +23,15 @@ LogRotate::~LogRotate() {
     std::cerr << "\nExiting, log location: " << pimpl_->log_file_with_path_ << std::endl;
 }
 
+/// @param logEntry converts to string prior to saving to file
+void LogRotate::ReceiveLogMessage(g3::LogMessageMover logEntry) {
+    const g3::LogMessage& msg = logEntry.get();
+    std::string out;
+    out.append(msg.timestamp() + "\t"
+               + msg.level()
+               + " [" + msg.threadID() + "]\t" + msg.message() + "\n");
+    save(out);
+}
 
 /// @param logEntry to write to file
 void LogRotate::save(std::string logEntry) {
@@ -46,7 +55,7 @@ std::string LogRotate::logFileName() {
  */
 void LogRotate::setMaxArchiveLogCount(int max_size) {
     pimpl_->setMaxArchiveLogCount(max_size);
- }
+}
 
 
 int LogRotate::getMaxArchiveLogCount() {

@@ -76,9 +76,9 @@ namespace  LogRotateUtility {
    std::string header() {
       std::ostringstream ss_entry;
       //  Day Month Date Time Year: is written as "%a %b %d %H:%M:%S %Y" 
-     //   and formatted output as : Wed Sep 19 08:28:16 2012
-     auto now = std::chrono::system_clock::now();      
-     ss_entry << "\ng3log: created log file at: " << g3::localtime_formatted(now, "%a %b %d %H:%M:%S %Y") << "\n";
+      //   and formatted output as : Wed Sep 19 08:28:16 2012
+      auto now = std::chrono::system_clock::now();
+      ss_entry << "\ng3log: created log file at: " << g3::localtime_formatted(now, "%a %b %d %H:%M:%S %Y") << "\n";
       return ss_entry.str();
    }
 
@@ -92,23 +92,28 @@ namespace  LogRotateUtility {
          }
          using namespace std;
 
-         regex date_regex("\\.(\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2})\\.gz");
-         smatch date_match;
-         if (regex_match(suffix, date_match, date_regex)) {
-            if (date_match.size() == 2) {
-               std::string date = date_match[1].str();
-               struct tm tm = {0};
-               time_t t;
-               if (strptime(date.c_str(), "%Y-%m-%d-%H-%M-%S", &tm) == nullptr) {
-                  return false;
-               }
-               t = mktime(&tm);
-               if (t == -1) {
-                  return false;
-               }
-               result = (long) t;
-               return true;
-            }
+         try {
+             regex date_regex("\\.(\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2})\\.gz");
+             smatch date_match;
+             if (regex_match(suffix, date_match, date_regex)) {
+                 if (date_match.size() == 2) {
+                     std::string date = date_match[1].str();
+                     struct tm tm = {0};
+                     time_t t;
+                     if (strptime(date.c_str(), "%Y-%m-%d-%H-%M-%S", &tm) == nullptr) {
+                         return false;
+                     }
+                     t = mktime(&tm);
+                     if (t == -1) {
+                         return false;
+                     }
+                     result = (long) t;
+                     return true;
+                 }
+             }
+         }
+         catch (std::regex_error & ex) {
+            std::cerr << "regex-error checking logs for expiration: " << ex.what() << std::endl;
          }
       }
       return false;

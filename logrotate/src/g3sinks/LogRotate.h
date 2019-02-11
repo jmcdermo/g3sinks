@@ -14,7 +14,7 @@
 #include <string>
 #include <memory>
 
-
+#include <g3log/logmessage.hpp>
 
 struct LogRotateHelper;
 
@@ -30,6 +30,7 @@ class LogRotate {
     virtual ~LogRotate();
 
 
+    void ReceiveLogMessage(g3::LogMessageMover logEntry);
     void save(std::string logEnty);
     std::string changeLogFile(const std::string& log_directory, const std::string& new_name="");
     std::string logFileName();
@@ -43,9 +44,9 @@ class LogRotate {
     void setMaxLogSize(int max_file_size_in_bytes);
     int getMaxLogSize();
 
-    
+    static std::string LogDetailsToString(const g3::LogMessage& msg);
 
-  private:
+private:
     std::unique_ptr<LogRotateHelper> pimpl_;
 
 };
