@@ -22,14 +22,14 @@ SET(MAJOR_VERSION 1)
 IF (${VERSION}.x STREQUAL ".x")
    IF (MSVC)
       message("windows: Extracting git software version")
-      execute_process(COMMAND powershell "(git rev-list --branches HEAD | Measure-Object -line).Lines" OUTPUT_VARIABLE GIT_VERSION WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+      execute_process(COMMAND powershell "(git rev-list --branches HEAD | Measure-Object -line).Lines" OUTPUT_VARIABLE GIT_VERSION WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
    ELSE()
       IF(UNIX OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
          message("nix: Extracting git software version")
       ELSE()
          message("unknown platform: extracting git software version")
       ENDIF()
-      execute_process(COMMAND bash "-c" "git rev-list --branches HEAD | wc -l | tr -d ' ' | tr -d '\n'" OUTPUT_VARIABLE GIT_VERSION WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+      execute_process(COMMAND bash "-c" "git rev-list --branches HEAD | wc -l | tr -d ' ' | tr -d '\n'" OUTPUT_VARIABLE GIT_VERSION WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
    ENDIF()
 
    SET(MINOR_VERSION 1)
@@ -69,8 +69,8 @@ INCLUDE (${LogRotate_SOURCE_DIR}/Options.cmake)
     MESSAGE("CMAKE_PREFIX_PATH: " ${CMAKE_PREFIX_PATH})
  ENDIF()
 
-
-find_library(G3LOG_LIBRARY g3logger PATHS /usr/local/probe/lib )
+message("g3path ===> ${CMAKE_SOURCE_DIR}/../..")
+find_library(G3LOG_LIBRARY g3logger PATHS ${CMAKE_SOURCE_DIR}/../.. /usr/local/probe/lib )
 include_directories(${CMAKE_PREFIX_PATH}/include)
 
 
