@@ -1,18 +1,24 @@
 sudo: required
-
 language: cpp
+
+git:
+  quiet: true
+
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+    - os: osx
+      osx_image: xcode10.1
+
 
 compiler:
   - gcc
-  - clang
-
-services:
-  - docker 
 
 before_install:
-  - docker pull ubuntu:16.04 
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then uname -a; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo uname -a; sudo sh scripts/travis-bootstrap-ubuntu.sh; fi
 
 script:
- - docker build .
+  - bash scripts/buildAndRunTests.sh
 
- 
