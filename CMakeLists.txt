@@ -39,17 +39,19 @@ endif()
 # Global find g3log
 # =========================
 include_directories(${CMAKE_PREFIX_PATH}/include)
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  find_library(G3LOG_LIBRARY g3log PATHS /usr/local/lib ${CMAKE_PREFIX_PATH}
-                                         ${CMAKE_INSTALL_PREFIX})
-else()
-  # APPLE and WIN32 use find_package library"
-  find_package(G3LOG)
-  message(
-    "g3log package:
-        found: ${G3LOG_FOUND}
-        include dir: ${G3LOG_INCLUDE_DIRS}
-        libraries: ${G3LOG_LIBRARY}")
+if(NOT G3LOG_LIBRARY)
+  if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    find_library(G3LOG_LIBRARY g3log PATHS /usr/local/lib ${CMAKE_PREFIX_PATH}
+                                           ${CMAKE_INSTALL_PREFIX})
+  else()
+    # APPLE and WIN32 use find_package library"
+    find_package(G3LOG)
+    message(
+      "g3log package:
+          found: ${G3LOG_FOUND}
+          include dir: ${G3LOG_INCLUDE_DIRS}
+          libraries: ${G3LOG_LIBRARY}")
+  endif()
 endif()
 
 if(NOT G3LOG_LIBRARY)
